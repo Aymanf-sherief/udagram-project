@@ -1,9 +1,9 @@
 import AWS = require("aws-sdk");
 import { config } from "./config/config";
 
-// Configure AWS
-const credentials = new AWS.SharedIniFileCredentials({ profile: "default" });
-AWS.config.credentials = credentials;
+// // Configure AWS
+// const credentials = new AWS.SharedIniFileCredentials({ profile: "default" });
+// AWS.config.credentials = credentials;
 
 export const s3 = new AWS.S3({
   signatureVersion: "v4",
@@ -26,9 +26,18 @@ export function getGetSignedUrl(key: string): string {
 export function getPutSignedUrl(key: string): string {
   const signedUrlExpireSeconds = 60 * 5;
 
-  return s3.getSignedUrl("putObject", {
+  const url = s3.getSignedUrl("putObject", {
     Bucket: config.aws_media_bucket,
     Key: key,
     Expires: signedUrlExpireSeconds,
   });
+
+  console.log("putObject", {
+    Bucket: config.aws_media_bucket,
+    Key: key,
+    Expires: signedUrlExpireSeconds,
+    url,
+  });
+
+  return url;
 }
